@@ -1,0 +1,95 @@
+## Java Program to Connect to a Database Using JDBC and Delete Values
+
+Aim: To write a Java program to connect to a MySQL database using JDBC and delete a record from a table.
+
+### 1. SQL Commands
+
+Create a database and table, and insert a sample record.
+
+```
+CREATE DATABASE college;
+
+USE college;
+
+CREATE TABLE student (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    marks INT
+);
+
+INSERT INTO student VALUES (101, 'Ravi', 85);
+```
+
+### 2. Java Program
+
+```
+
+import java.sql.*;
+
+public class JDBCDelete {
+    public static void main(String[] args) {
+        try {
+            // Load JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Connect to database
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/college",
+                "root",
+                "password"
+            );
+
+            // Delete record
+            String query = "DELETE FROM student WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, 101);
+
+            int rows = ps.executeUpdate();
+
+            if (rows > 0) {
+                System.out.println("Record deleted successfully!");
+            } else {
+                System.out.println("Record not found.");
+            }
+
+            // Close resources
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+```
+
+### 3. Output
+
+```
+Record deleted successfully!
+```
+
+### 4. Verify the Deleted Record
+
+Execute the following SQL command:
+
+```
+SELECT * FROM student;
+```
+
+The deleted record with ID `101` will no longer appear in the table.
+
+### 5. Explanation
+
+1. `Class.forName()` loads the MySQL JDBC driver.
+2. `DriverManager.getConnection()` establishes the database connection.
+3. `PreparedStatement` prepares the SQL `DELETE` query.
+4. `setInt()` sets the student ID to be deleted.
+5. `executeUpdate()` executes the delete operation.
+6. `close()` closes the database resources.
+
+Result: The Java program connects to the MySQL database using JDBC and deletes the specified student record successfully.
+
+Note: Replace `"password"` with your actual MySQL password and add the MySQL Connector/J driver to your project.
